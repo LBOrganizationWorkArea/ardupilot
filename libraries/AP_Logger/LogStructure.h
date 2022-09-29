@@ -167,6 +167,16 @@ static const uint8_t LS_MULTIPLIERS_SIZE = 17;
 /*
   log structures common to all vehicle types
  */
+
+struct PACKED log_lbee{
+
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    float pos_x;
+    float pos_y;
+    float pos_z;
+
+};
 struct PACKED log_Format {
     LOG_PACKET_HEADER;
     uint8_t type;
@@ -1294,6 +1304,8 @@ struct PACKED log_VER {
     { LOG_PARAMETER_MSG, sizeof(log_Parameter), \
      "PARM", "QNf",        "TimeUS,Name,Value", "s--", "F--"  },       \
 LOG_STRUCTURE_FROM_GPS \
+    { LOG_POS_RAW_INDOOR_LBEE, sizeof(log_lbee), \
+      "LBRP","Qfff","TimeUS,pos_x,pos_y,pos_z"},\
     { LOG_MESSAGE_MSG, sizeof(log_Message), \
       "MSG",  "QZ",     "TimeUS,Message", "s-", "F-"}, \
     { LOG_RCIN_MSG, sizeof(log_RCIN), \
@@ -1435,7 +1447,7 @@ enum LogMessages : uint8_t {
     LOG_IDS_FROM_BATTMONITOR,
 
     LOG_IDS_FROM_GPS,
-
+    LOG_POS_RAW_INDOOR_LBEE,
     LOG_PIDR_MSG,
     LOG_PIDP_MSG,
     LOG_PIDY_MSG,
