@@ -1304,8 +1304,6 @@ struct PACKED log_VER {
     { LOG_PARAMETER_MSG, sizeof(log_Parameter), \
      "PARM", "QNf",        "TimeUS,Name,Value", "s--", "F--"  },       \
 LOG_STRUCTURE_FROM_GPS \
-    { LOG_POS_RAW_INDOOR_LBEE, sizeof(log_lbee), \
-      "LBRP","Qfff","TimeUS,pos_x,pos_y,pos_z"},\
     { LOG_MESSAGE_MSG, sizeof(log_Message), \
       "MSG",  "QZ",     "TimeUS,Message", "s-", "F-"}, \
     { LOG_RCIN_MSG, sizeof(log_RCIN), \
@@ -1316,6 +1314,8 @@ LOG_STRUCTURE_FROM_GPS \
       "RCOU",  "QHHHHHHHHHHHHHH",     "TimeUS,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14", "sYYYYYYYYYYYYYY", "F--------------", true  }, \
     { LOG_RSSI_MSG, sizeof(log_RSSI), \
       "RSSI",  "Qff",     "TimeUS,RXRSSI,RXLQ", "s--", "F--", true  }, \
+    { LOG_POS_RAW_INDOOR_LBEE, sizeof(log_lbee), \
+      "LBRP","Qfff","TimeUS,PosX,PosY,PosZ","smmm","F---"},\
 LOG_STRUCTURE_FROM_BARO \
 LOG_STRUCTURE_FROM_PRECLAND \
     { LOG_POWR_MSG, sizeof(log_POWR), \
