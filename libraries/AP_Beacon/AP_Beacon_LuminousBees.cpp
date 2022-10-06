@@ -42,7 +42,6 @@ struct tag_packet_t {
 // update the state of the sensor
 void AP_Beacon_LuminousBees::update(void)
 {
-    static uint32_t idx = 0;
     if (_tag != nullptr) {
         uint32_t nbytes = MIN(_tag->available(), 64);
 
@@ -61,7 +60,7 @@ void AP_Beacon_LuminousBees::update(void)
                             if (ret > 0) {
                                 if ((this->_last_estimation_update + TAG_UPDATE_INTERVAL) < curr_estimation_update) {
                                     this->_last_estimation_update = curr_estimation_update;
-                                    
+
                                     uint64_t pkt0_time = AP_HAL::micros64();
                                     Vector3f estimated_position;
                                     float position_error = tagData.posErr;
@@ -78,14 +77,6 @@ void AP_Beacon_LuminousBees::update(void)
                                     origin_loc.offset(position_ned.x, position_ned.y);
 
                                     this->send_externalNav(position_ned, position_error, pkt0_time, estimated_position);
-                                    if (idx % 10) {
-                                        //send mavlink
-                                        mavlink_msg_debug_vect_send(MAVLINK_COMM_0, message_name, AP_HAL::millis64(), estimated_position.x, estimated_position.y, estimated_position.z);
-                                        //AP::logger().Write("RAW_POS","Time,X,Y,Z","Qfff",AP_HAL::micros64(),double(estimated_position.x),double(estimated_position.y),double(estimated_position.z));
-                                        //high frequency method
-                                        //AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z);
-                                        //comment or not to active 
-                                }
                                 }
                             }
                             last_update_ms = AP_HAL::millis();
@@ -95,7 +86,6 @@ void AP_Beacon_LuminousBees::update(void)
                     return;
                 }
             }
-            idx++;
         }
 
     }
