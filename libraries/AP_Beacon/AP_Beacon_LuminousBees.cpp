@@ -42,6 +42,7 @@ struct tag_packet_t {
 // update the state of the sensor
 void AP_Beacon_LuminousBees::update(void)
 {
+    static uint32_t idx = 0;
     if (_tag != nullptr) {
         uint32_t nbytes = MIN(_tag->available(), 64);
 
@@ -77,6 +78,12 @@ void AP_Beacon_LuminousBees::update(void)
                                     origin_loc.offset(position_ned.x, position_ned.y);
 
                                     this->send_externalNav(position_ned, position_error, pkt0_time, estimated_position);
+                                    if (idx % 10 == 0) {
+                                        //mavlink_msg_debug_vect_send(MAVLINK_COMM_0, message_name, AP_HAL::millis64(), (estimated_position.x), estimated_position.y, estimated_position.z);
+                                        //AP::logger().Write("LBRP","Time,X,Y,Z","Qfff",AP_HAL::micros64(),estimated_position.x,estimated_position.y,estimated_position.z);
+                                        //high frequency method
+                                        //AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z); // get log for the position (comment or not)
+                                }
                                 }
                             }
                             last_update_ms = AP_HAL::millis();
@@ -86,6 +93,7 @@ void AP_Beacon_LuminousBees::update(void)
                     return;
                 }
             }
+            idx++;
         }
 
     }

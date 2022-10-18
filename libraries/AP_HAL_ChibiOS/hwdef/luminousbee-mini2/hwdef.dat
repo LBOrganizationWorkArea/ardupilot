@@ -1,3 +1,4 @@
+# Con i suggerimenti di andhi
 # LUMINOUS BEE MINI 3.1 bidirectional telemetry - BETA 
 # NUOVA IMU ICM-42605
 # REV. MICRO dps310 + imu 20608 + swap mot 1/3
@@ -40,6 +41,10 @@ define HAL_STORAGE_SIZE 16384
 
 # only one I2C bus
 I2C_ORDER I2C1
+
+# NO DMA I2C
+NODMA I2C*
+define STM32_I2C_USE_DMA FALSE
 
 # to match px4 we make the first bus number 1
 #define HAL_I2C_BUS_BASE 1
@@ -182,7 +187,7 @@ PE1 UART8_TX UART8
 PE2 SPI4_SCK SPI4
 PE5 SPI4_MISO SPI4
 PE6 SPI4_MOSI SPI4
-
+DMA_NOSHARE for SPI4* #ANDY
 
 PE3 VDD_SENSORS_EN OUTPUT HIGH
 PE4 SPEKTRUM_PWR OUTPUT HIGH
