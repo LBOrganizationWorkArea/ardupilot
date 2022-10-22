@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #search for version of arducopter
 #!/bin/bash
 filename='ArduCopter/version.h'
@@ -46,12 +45,26 @@ then
 
 				echo "Outdoor Firmware : Compile Successful and Upload ✅ "
 				#rename firmware file 
-
+					#find git identity
+					filename='build/luminousbee5/bin/arducopter.apj'
+					while read line; do
+					# reading each line
+					substr="git_identity"
+					if [[ $line == *"$substr"* ]];
+					then
+						#extract version name
+						git=$(sed -E 's/.*"([^:]+)".*/\1/' <<< "$line")
+						git_identity="${git#*V}.apj"
+						echo " "
+						echo "Found git_identity  of this firmware : $git_identity"
+						echo " "
+					fi
+					done < $filename
 					board="luminousbee5_"
-					date_of_compile="$(date '+%Y-%m-%d').apj"
-					name="$board$Firmware_Ver$date_of_compile"
+					date_of_compile="$(date '+%Y-%m-%d-%H-%M')_"
+					name="$board$Firmware_Ver$date_of_compile$git_identity"
 					echo "Renaming Firmware file ... to $name "
-					mv "build/luminousbee5/bin/arducopter.apj" "$name"
+					mv "build/luminousbee5/bin/arducopter.apj" "build/luminousbee5/bin/$name"
 					echo " "
 					echo "File renamed !"
 
@@ -70,14 +83,28 @@ then
 			then
 				echo "Outdoor Firmware : Compile Successful ✅!"
 				#rename firmware file 
-				
-				board="luminousbee5_"
-				date_of_compile="$(date '+%Y-%m-%d').apj"
-				name="$board$Firmware_Ver$date_of_compile"
-				echo "Renaming Firmware file ... to $name "
-				mv "build/luminousbee5/bin/arducopter.apj" "build/luminousbee5/bin/$name"
-				echo " "
-				echo "File renamed !"
+					#find git identity
+					filename='build/luminousbee5/bin/arducopter.apj'
+					while read line; do
+					# reading each line
+					substr="git_identity"
+					if [[ $line == *"$substr"* ]];
+					then
+						#extract version name
+						git=$(sed -E 's/.*"([^:]+)".*/\1/' <<< "$line")
+						git_identity="${git#*V}.apj"
+						echo " "
+						echo "Found git_identity  of this firmware : $git_identity"
+						echo " "
+					fi
+					done < $filename
+					board="luminousbee5_"
+					date_of_compile="$(date '+%Y-%m-%d-%H-%M')_"
+					name="$board$Firmware_Ver$date_of_compile$git_identity"
+					echo "Renaming Firmware file ... to $name "
+					mv "build/luminousbee5/bin/arducopter.apj" "build/luminousbee5/bin/$name"
+					echo " "
+					echo "File renamed !"
 
 			else
 				echo " "
@@ -103,12 +130,29 @@ then
 			if ./waf distclean && ./waf configure --board luminousbee-mini2 && ./waf copter &&  python3 Tools/scripts/uploader.py build/luminousbee-mini2/bin/arducopter.apj;
 			then
 				echo "Indoor Firmware : Compile Successful and Upload ✅ "
-				board="luminousbee-mini_"
-				date_of_compile="$(date '+%Y-%m-%d').apj"
-				name="$board$Firmware_Ver$date_of_compile"
-				echo "Renaming Firmware file ... to $name "
-				mv "build/luminousbee-mini2/bin/arducopter.apj" "build/luminousbee-mini2/bin/$name"
-				echo "File Renamed"
+					#rename firmware file 
+					#find git identity
+					filename='build/luminousbee-mini2/bin/arducopter.apj'
+					while read line; do
+					# reading each line
+					substr="git_identity"
+					if [[ $line == *"$substr"* ]];
+					then
+						#extract version name
+						git=$(sed -E 's/.*"([^:]+)".*/\1/' <<< "$line")
+						git_identity="${git#*V}.apj"
+						echo " "
+						echo "Found git_identity  of this firmware : $git_identity"
+						echo " "
+					fi
+					done < $filename
+					board="luminousbee-mini2_"
+					date_of_compile="$(date '+%Y-%m-%d-%H-%M')_"
+					name="$board$Firmware_Ver$date_of_compile$git_identity"
+					echo "Renaming Firmware file ... to $name "
+					mv "build/luminousbee-mini2/bin/arducopter.apj" "build/luminousbee-mini2/bin/$name"
+					echo " "
+					echo "File renamed !"
 			else
 				echo "Indoor Firmware : Something went Wrong ❌"
 
@@ -122,12 +166,29 @@ then
 			if ./waf distclean && ./waf configure --board luminousbee-mini2 && ./waf copter;
 			then
 				echo "Indoor Firmware : Compile Successful ✅ ! "
-				board="luminousbee-mini_"
-				date_of_compile="$(date '+%Y-%m-%d').apj"
-				name="$board$Firmware_Ver$date_of_compile"
-				echo "Renaming Firmware file ... to $name "
-				mv "build/luminousbee-mini2/bin/arducopter.apj" "build/luminousbee-mini2/bin/$name"
-				echo "File renamed ! "
+					#rename firmware file 
+					#find git identity
+					filename='build/luminousbee-mini2/bin/arducopter.apj'
+					while read line; do
+					# reading each line
+					substr="git_identity"
+					if [[ $line == *"$substr"* ]];
+					then
+						#extract version name
+						git=$(sed -E 's/.*"([^:]+)".*/\1/' <<< "$line")
+						git_identity="${git#*V}.apj"
+						echo " "
+						echo "Found git_identity  of this firmware : $git_identity"
+						echo " "
+					fi
+					done < $filename
+					board="luminousbee-mini2_"
+					date_of_compile="$(date '+%Y-%m-%d-%H-%M')_"
+					name="$board$Firmware_Ver$date_of_compile$git_identity"
+					echo "Renaming Firmware file ... to $name "
+					mv "build/luminousbee-mini2/bin/arducopter.apj" "build/luminousbee-mini2/bin/$name"
+					echo " "
+					echo "File renamed !"
 			else
 				echo "Indoor Firmware : Something went Wrong ❌ !"
 
