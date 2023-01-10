@@ -922,6 +922,17 @@ uint32_t AP_Logger::num_dropped() const
 
 // end functions pass straight through to backend
 
+void AP_Logger::WriteRawPos(float x , float y , float z){
+    struct log_lbee pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_POS_RAW_INDOOR_LBEE),
+        time_us: AP_HAL::micros64(),
+        pos_x :     x,
+        pos_y:      y,
+        pos_z:      z
+    };
+    AP::logger().WriteBlock(&pkt,sizeof(pkt));
+}
+
 /* Write support */
 void AP_Logger::Write(const char *name, const char *labels, const char *fmt, ...)
 {
