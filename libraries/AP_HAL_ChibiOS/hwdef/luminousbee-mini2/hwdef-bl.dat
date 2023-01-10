@@ -1,4 +1,4 @@
-# LUMINOUS BEE 5.32/5.4
+# LUMINOUS BEE MINI 3.1
 # hw definition file for processing by chibios_hwdef.py
 #define new bootloader baudrate
 
@@ -8,7 +8,7 @@ define BOOTLOADER_BAUDRATE 921600
 MCU STM32H7xx STM32H743xx
 
 # board ID for firmware load
-APJ_BOARD_ID 1029
+APJ_BOARD_ID 11
 
 # crystal frequency
 OSCILLATOR_HZ 24000000
