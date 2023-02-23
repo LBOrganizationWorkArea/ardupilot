@@ -27,6 +27,7 @@
 #define APM_TIMER_PRIORITY      181
 #define APM_RCOUT_PRIORITY      181
 #define APM_RCIN_PRIORITY       177
+#define APM_LED_PRIORITY         60
 #define APM_UART_PRIORITY        60
 #define APM_UART_UNBUFFERED_PRIORITY 181
 #define APM_STORAGE_PRIORITY     59
@@ -61,6 +62,10 @@
 
 #ifndef RCOUT_THD_WA_SIZE
 #define RCOUT_THD_WA_SIZE    512
+#endif
+
+#ifndef LED_THD_WA_SIZE
+#define LED_THD_WA_SIZE    256
 #endif
 
 #ifndef RCIN_THD_WA_SIZE
@@ -161,6 +166,7 @@ private:
 
     thread_t* _timer_thread_ctx;
     thread_t* _rcout_thread_ctx;
+    thread_t* _led_thread_ctx;
     thread_t* _rcin_thread_ctx;
     thread_t* _io_thread_ctx;
     thread_t* _storage_thread_ctx;
@@ -176,6 +182,7 @@ private:
 
     static void _timer_thread(void *arg);
     static void _rcout_thread(void *arg);
+    static void _led_thread(void *arg);
     static void _rcin_thread(void *arg);
     static void _io_thread(void *arg);
     static void _storage_thread(void *arg);

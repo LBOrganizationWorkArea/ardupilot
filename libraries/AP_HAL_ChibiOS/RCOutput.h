@@ -106,6 +106,11 @@ public:
     void timer_tick(uint64_t last_run_us);
 
     /*
+      LED push
+     */
+    void led_timer_tick(uint32_t last_run_us);
+
+    /*
       setup for serial output to a set of ESCs, using the given
       baudrate. Assumes 1 start bit, 1 stop bit, LSB first and 8
       databits. This is used for ESC configuration and firmware
@@ -253,6 +258,11 @@ public:
       rcout thread
      */
     void rcout_thread();
+
+    /*
+      LED thread
+     */
+    void led_thread();
 
     /*
      timer information
@@ -414,6 +424,10 @@ private:
      */
     thread_t *rcout_thread_ctx;
 
+    /*
+      timer thread for use by led events
+     */
+    thread_t *led_thread_ctx;
     /*
       structure for IRQ handler for soft-serial input
      */
@@ -606,7 +620,7 @@ private:
     static void dshot_update_tick(void* p);
     static void dshot_send_next_group(void* p);
     // release locks on the groups that are pending in reverse order
-    void dshot_collect_dma_locks(uint64_t last_run_us);
+    void dshot_collect_dma_locks(uint32_t last_run_us, bool led_thread = false);
     static void dma_up_irq_callback(void *p, uint32_t flags);
     static void dma_unlock(void *p);
     void dma_cancel(pwm_group& group);
