@@ -379,7 +379,7 @@ public:
 
     // See WS2812B spec for expected pulse widths
     static constexpr uint32_t NEOP_BIT_WIDTH_TICKS = 20;
-    static constexpr uint32_t NEOP_BIT_0_TICKS = 5; //White Led Problem Resolver from 7 to 5
+    static constexpr uint32_t NEOP_BIT_0_TICKS = 6; //White Led Problem Resolver from 7 to 5
     static constexpr uint32_t NEOP_BIT_1_TICKS = 14;
     // neopixel does not use pulse widths at all
     static constexpr uint32_t PROFI_BIT_0_TICKS = 7;
