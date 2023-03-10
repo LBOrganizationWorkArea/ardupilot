@@ -49,7 +49,10 @@ extern AP_IOMCU iomcu;
 #endif
 
 #define RCOU_SERIAL_TIMING_DEBUG 0
-
+#define LED_THD_WA_SIZE 256
+#if !defined(HAL_NO_LED_THREAD) && defined(HAL_NO_RCOUT_THREAD)
+#define HAL_NO_LED_THREAD
+#endif
 #define TELEM_IC_SAMPLE 16
 
 struct RCOutput::pwm_group RCOutput::pwm_group_list[] = { HAL_PWM_GROUPS };
@@ -144,13 +147,31 @@ void RCOutput::init()
     hal.scheduler->register_timer_process(FUNCTOR_BIND(this, &RCOutput::safety_update, void));
     _initialised = true;
 }
-
+// start the led thread
+bool RCOutput::start_led_thread(void)
+{
+#ifdef HAL_NO_LED_THREAD
+    return false;
+#else
+    WITH_SEMAPHORE(led_thread_sem);
+    if (led_thread_ctx) {
+        return true;
+    }
+    if (!hal.scheduler->thread_create(FUNCTOR_BIND_MEMBER(&RCOutput::led_thread, void), "led", LED_THD_WA_SIZE, AP_HAL::Scheduler::PRIORITY_LED, 0)) {
+        return false;
+    }
+    return true;
+#endif
+}
 /*
   thread for handling LED RCOutpu
  */
 void RCOutput::led_thread()
 {
-    led_thread_ctx = chThdGetSelfX();
+    {
+        WITH_SEMAPHORE(led_thread_sem);
+        led_thread_ctx = chThdGetSelfX();
+    }
 
     // don't start outputting until fully configured
     while (!hal.scheduler->is_system_initialized()) {
@@ -166,6 +187,7 @@ void RCOutput::led_thread()
         led_timer_tick(LED_OUTPUT_PERIOD_US + AP_HAL::micros());
     }
 }
+
 
 /*
   thread for handling RCOutput send
@@ -971,6 +993,11 @@ void RCOutput::set_group_mode(pwm_group &group)
     {
         uint8_t bits_per_pixel = 24;
         bool active_high = true;
+
+        if (!start_led_thread()) {
+            group.current_mode = MODE_PWM_NONE;
+            break;
+        }
 
         if (group.current_mode == MODE_PROFILED) {
             bits_per_pixel = 25;
@@ -2433,6 +2460,7 @@ void RCOutput::set_serial_led_rgb_data(const uint16_t chan, int8_t led, uint8_t 
         }
     }
     serial_led_set_single_rgb_data(*grp, i, uint8_t(led), red, green, blue);
+
 }
 
 /*
@@ -2460,6 +2488,12 @@ void RCOutput::serial_led_send(const uint16_t chan)
 {
     if (!_initialised) {
         return;
+    }
+    {
+        WITH_SEMAPHORE(led_thread_sem);
+        if (!led_thread_ctx) {
+            return;
+        }
     }
 
     uint8_t i;

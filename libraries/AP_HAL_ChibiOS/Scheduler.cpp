@@ -56,12 +56,12 @@ THD_WORKING_AREA(_timer_thread_wa, TIMER_THD_WA_SIZE);
 #ifndef HAL_NO_RCOUT_THREAD
 THD_WORKING_AREA(_rcout_thread_wa, RCOUT_THD_WA_SIZE);
 #endif
-#if !defined(HAL_NO_LED_THREAD) && defined(HAL_NO_RCOUT_THREAD)
-#define HAL_NO_LED_THREAD
-#endif
-#ifndef HAL_NO_LED_THREAD
-THD_WORKING_AREA(_led_thread_wa, LED_THD_WA_SIZE);
-#endif
+// #if !defined(HAL_NO_LED_THREAD) && defined(HAL_NO_RCOUT_THREAD)
+// #define HAL_NO_LED_THREAD
+// #endif
+// #ifndef HAL_NO_LED_THREAD
+// THD_WORKING_AREA(_led_thread_wa, LED_THD_WA_SIZE);
+//#endif
 #ifndef HAL_NO_RCIN_THREAD
 THD_WORKING_AREA(_rcin_thread_wa, RCIN_THD_WA_SIZE);
 #endif
@@ -111,14 +111,14 @@ void Scheduler::init()
                      this);                     /* Thread parameter.    */
 #endif
 
-#ifndef HAL_NO_LED_THREAD
-    // setup the LED thread - this will call tasks at 1kHz
-    _led_thread_ctx = chThdCreateStatic(_led_thread_wa,
-                     sizeof(_led_thread_wa),
-                     APM_LED_PRIORITY,          /* Initial priority.    */
-                     _led_thread,               /* Thread function.     */
-                     this);                     /* Thread parameter.    */
-#endif
+// #ifndef HAL_NO_LED_THREAD
+//     // setup the LED thread - this will call tasks at 1kHz
+//     _led_thread_ctx = chThdCreateStatic(_led_thread_wa,
+//                      sizeof(_led_thread_wa),
+//                      APM_LED_PRIORITY,          /* Initial priority.    */
+//                      _led_thread,               /* Thread function.     */
+//                      this);                     /* Thread parameter.    */
+// #endif
 
 #ifndef HAL_NO_RCIN_THREAD
     // setup the RCIN thread - this will call tasks at 1kHz
@@ -370,21 +370,21 @@ void Scheduler::_rcout_thread(void *arg)
 #endif
 }
 
-void Scheduler::_led_thread(void *arg)
-{
-#ifndef HAL_NO_LED_THREAD
-    Scheduler *sched = (Scheduler *)arg;
-    chRegSetThreadName("led");
+// void Scheduler::_led_thread(void *arg)
+// {
+// #ifndef HAL_NO_LED_THREAD
+//     Scheduler *sched = (Scheduler *)arg;
+//     chRegSetThreadName("led");
 
-    while (!sched->_hal_initialized) {
-        sched->delay_microseconds(1000);
-    }
-#if HAL_USE_PWM == TRUE
-    // trampoline into the rcout thread
-    ((RCOutput*)hal.rcout)->led_thread();
-#endif
-#endif
-}
+//     while (!sched->_hal_initialized) {
+//         sched->delay_microseconds(1000);
+//     }
+// #if HAL_USE_PWM == TRUE
+//     // trampoline into the rcout thread
+//     ((RCOutput*)hal.rcout)->led_thread();
+// #endif
+// #endif
+// }
 
 /*
   return true if we are in a period of expected delay. This can be
@@ -681,6 +681,7 @@ uint8_t Scheduler::calculate_thread_priority(priority_base base, int8_t priority
         { PRIORITY_CAN, APM_CAN_PRIORITY},
         { PRIORITY_TIMER, APM_TIMER_PRIORITY},
         { PRIORITY_RCOUT, APM_RCOUT_PRIORITY},
+        { PRIORITY_LED, APM_LED_PRIORITY},
         { PRIORITY_RCIN, APM_RCIN_PRIORITY},
         { PRIORITY_IO, APM_IO_PRIORITY},
         { PRIORITY_UART, APM_UART_PRIORITY},

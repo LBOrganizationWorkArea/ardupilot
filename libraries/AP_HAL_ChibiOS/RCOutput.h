@@ -262,7 +262,7 @@ public:
     /*
       LED thread
      */
-    void led_thread();
+    //void led_thread();
 
     /*
      timer information
@@ -424,10 +424,15 @@ private:
      */
     thread_t *rcout_thread_ctx;
 
-    /*
+     /*
       timer thread for use by led events
      */
     thread_t *led_thread_ctx;
+
+    /*
+      mutex to control LED thread creation
+     */
+    HAL_Semaphore led_thread_sem;
     /*
       structure for IRQ handler for soft-serial input
      */
@@ -596,6 +601,10 @@ private:
 
     // update safety switch and LED
     void safety_update(void);
+
+    // LED thread
+    void led_thread();
+    bool start_led_thread();
 
     uint32_t telem_request_mask;
 

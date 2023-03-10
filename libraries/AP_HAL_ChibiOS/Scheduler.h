@@ -64,9 +64,9 @@
 #define RCOUT_THD_WA_SIZE    512
 #endif
 
-#ifndef LED_THD_WA_SIZE
-#define LED_THD_WA_SIZE    256
-#endif
+// #ifndef LED_THD_WA_SIZE
+// #define LED_THD_WA_SIZE    256
+// #endif
 
 #ifndef RCIN_THD_WA_SIZE
 #define RCIN_THD_WA_SIZE    1024
@@ -166,7 +166,7 @@ private:
 
     thread_t* _timer_thread_ctx;
     thread_t* _rcout_thread_ctx;
-    thread_t* _led_thread_ctx;
+    // thread_t* _led_thread_ctx;
     thread_t* _rcin_thread_ctx;
     thread_t* _io_thread_ctx;
     thread_t* _storage_thread_ctx;
@@ -182,7 +182,7 @@ private:
 
     static void _timer_thread(void *arg);
     static void _rcout_thread(void *arg);
-    static void _led_thread(void *arg);
+    // static void _led_thread(void *arg);
     static void _rcin_thread(void *arg);
     static void _io_thread(void *arg);
     static void _storage_thread(void *arg);

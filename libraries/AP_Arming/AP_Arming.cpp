@@ -50,6 +50,7 @@
 #include <AP_Mount/AP_Mount.h>
 #include <AP_OpenDroneID/AP_OpenDroneID.h>
 #include <AP_SerialManager/AP_SerialManager.h>
+#include <AP_Scheduler/AP_Scheduler.h>
 
 #if HAL_MAX_CAN_PROTOCOL_DRIVERS
   #include <AP_CANManager/AP_CANManager.h>
@@ -962,6 +963,7 @@ bool AP_Arming::system_checks(bool report)
             check_failed(ARMING_CHECK_SYSTEM, report, "Param storage failed");
             return false;
         }
+
 #if AP_TERRAIN_AVAILABLE
         const AP_Terrain *terrain = AP_Terrain::get_singleton();
         if ((terrain != nullptr) && terrain->init_failed()) {
