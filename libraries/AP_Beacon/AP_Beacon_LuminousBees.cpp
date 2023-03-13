@@ -78,7 +78,7 @@ void AP_Beacon_LuminousBees::update(void)
                                     origin_loc.offset(position_ned.x, position_ned.y);
 
                                     this->send_externalNav(position_ned, position_error, pkt0_time, estimated_position);
-                                    if (idx % 10) {
+                                    if (idx%10 == 0) {
                                         //send mavlink
                                        // mavlink_msg_debug_vect_send(MAVLINK_COMM_0, message_name, AP_HAL::millis64(), estimated_position.x, estimated_position.y, estimated_position.z);
                                         //AP::logger().Write("RAW_POS","Time,X,Y,Z","Qfff",AP_HAL::micros64(),double(estimated_position.x),double(estimated_position.y),double(estimated_position.z));
