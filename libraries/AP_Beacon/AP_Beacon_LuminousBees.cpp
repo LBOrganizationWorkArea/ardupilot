@@ -37,7 +37,9 @@ bool AP_Beacon_LuminousBees::healthy()
 struct tag_packet_t {
     float estPos[3];
     float posErr;
-    float tot_calc_power;
+    float first_path_power;
+    float rx_level;
+    float std_noise;
 };
 
 // update the state of the sensor
@@ -58,7 +60,7 @@ void AP_Beacon_LuminousBees::update(void)
                         ret = uart->read();
                         if ((ret >= 0) && (((uint8_t) ret) == 0x01)) {
                             // Now we are sure that the data is a position update packet
-                            ret = uart->read((uint8_t *) &tagData, 20); //change from 16 to 20 for total_calc_power
+                            ret = uart->read((uint8_t *) &tagData, 28); //change from 16 to 20 for total_calc_power
                             if (ret > 0) {
                                 if ((this->_last_estimation_update + TAG_UPDATE_INTERVAL) < curr_estimation_update) {
                                     this->_last_estimation_update = curr_estimation_update;
@@ -66,7 +68,9 @@ void AP_Beacon_LuminousBees::update(void)
                                     uint64_t pkt0_time = AP_HAL::micros64();
                                     Vector3f estimated_position;
                                     float position_error = tagData.posErr;
-                                    float Rx_Level = tagData.tot_calc_power;
+                                    // float First_Path = tagData.first_path_power;
+                                    // float Rx_Level = tagData.rx_level;
+                                    // float Std_Noise = tagData.std_noise;
 
                                     estimated_position.x = tagData.estPos[0];
                                     estimated_position.y = tagData.estPos[1];
@@ -82,14 +86,14 @@ void AP_Beacon_LuminousBees::update(void)
                                     origin_loc.offset(position_ned.x, position_ned.y);
 
                                     this->send_externalNav(position_ned, position_error, pkt0_time, estimated_position);
-                                    AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,Rx_Level);
+                                    //AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,Rx_Level);
 
                                     if (idx % 10 == 0) {
                                         //send mavlink
                                        // mavlink_msg_debug_vect_send(MAVLINK_COMM_0, message_name, AP_HAL::millis64(), estimated_position.x, estimated_position.y, estimated_position.z);
                                         //AP::logger().Write("RAW_POS","Time,X,Y,Z","Qfff",AP_HAL::micros64(),double(estimated_position.x),double(estimated_position.y),double(estimated_position.z));
                                         //high frequency method
-                                        //AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,tagData.tot_calc_power);
+                                        AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,tagData.first_path_power,tagData.rx_level,tagData.std_noise);
                                         //comment or not to active 
                                 }
                                 }
