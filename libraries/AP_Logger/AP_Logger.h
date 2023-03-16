@@ -333,7 +333,7 @@ public:
     void Write_PSCD(float pos_target, float pos, float vel_desired, float vel_target, float vel, float accel_desired, float accel_target, float accel);
 
     /* Write Raw_Pos at current time */
-    void WriteRawPos(float x, float y , float z , float first_path,float rx_level,float std_noise );
+    void WriteRawPos(float x, float y , float z , float first_path,float rx_level,float std_noise,uint8_t id_0,uint8_t id_1,uint8_t id_2,uint8_t id_3);
     void Write(const char *name, const char *labels, const char *fmt, ...);
     void Write(const char *name, const char *labels, const char *units, const char *mults, const char *fmt, ...);
     void WriteStreaming(const char *name, const char *labels, const char *fmt, ...);

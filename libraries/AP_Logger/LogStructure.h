@@ -181,7 +181,13 @@ struct PACKED log_lbee{
     float pos_x;
     float pos_y;
     float pos_z;
-    float pow_lvl;
+    float First_path;
+    float Rx_Lvl;
+    float Std_Noise;
+    uint8_t Id_0;
+    uint8_t Id_1;
+    uint8_t Id_2;
+    uint8_t Id_3;
 
 };
 
@@ -1252,7 +1258,7 @@ LOG_STRUCTURE_FROM_GPS \
     { LOG_RSSI_MSG, sizeof(log_RSSI), \
       "RSSI",  "Qff",     "TimeUS,RXRSSI,RXLQ", "s--", "F--", true  }, \
     { LOG_POS_RAW_INDOOR_LBEE, sizeof(log_lbee), \
-      "LBRP","Qffff","TimeUS,PosX,PosY,PosZ,Pow_Lvl","smmm?","F----"},\
+      "LBRP","QffffffBBBB","TimeUS,PosX,PosY,PosZ,First_Path,Rx_Lvl,Std_Noise,Id_0,Id_1,Id_2,3","smmm???????","F----------"},\
 LOG_STRUCTURE_FROM_BARO \
 LOG_STRUCTURE_FROM_PRECLAND \
     { LOG_POWR_MSG, sizeof(log_POWR), \

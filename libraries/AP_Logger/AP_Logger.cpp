@@ -922,7 +922,7 @@ uint32_t AP_Logger::num_dropped() const
 
 // end functions pass straight through to backend
 
-void AP_Logger::WriteRawPos(float x , float y , float z, float first_path,float rx_lvl,float std_noise){
+void AP_Logger::WriteRawPos(float x , float y , float z, float first_path,float rx_lvl,float std_noise,uint8_t id_0,uint8_t id_1,uint8_t id_2,uint8_t id_3){
     struct log_lbee pkt = {
         LOG_PACKET_HEADER_INIT(LOG_POS_RAW_INDOOR_LBEE),
         time_us: AP_HAL::micros64(),
@@ -931,7 +931,11 @@ void AP_Logger::WriteRawPos(float x , float y , float z, float first_path,float 
         pos_z:      z,
         First_path:    first_path,
         Rx_Lvl : rx_lvl,
-        Std_Noise : std_noise
+        Std_Noise : std_noise,
+        Id_0: id_0,
+        Id_1: id_1,
+        Id_2: id_2,
+        Id_3: id_3
     };
     AP::logger().WriteBlock(&pkt,sizeof(pkt));
 }

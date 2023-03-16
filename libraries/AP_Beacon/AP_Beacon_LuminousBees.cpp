@@ -40,6 +40,7 @@ struct tag_packet_t {
     float first_path_power;
     float rx_level;
     float std_noise;
+    uint8_t   view_anc[4];
 };
 
 // update the state of the sensor
@@ -60,13 +61,14 @@ void AP_Beacon_LuminousBees::update(void)
                         ret = uart->read();
                         if ((ret >= 0) && (((uint8_t) ret) == 0x01)) {
                             // Now we are sure that the data is a position update packet
-                            ret = uart->read((uint8_t *) &tagData, 28); //change from 16 to 20 for total_calc_power
+                            ret = uart->read((uint8_t *) &tagData, 32); //change from 16 to 20 for total_calc_power, FROM 28 TO 32
                             if (ret > 0) {
                                 if ((this->_last_estimation_update + TAG_UPDATE_INTERVAL) < curr_estimation_update) {
                                     this->_last_estimation_update = curr_estimation_update;
                                     
                                     uint64_t pkt0_time = AP_HAL::micros64();
                                     Vector3f estimated_position;
+                                    uint8_t array_anc[4];
                                     float position_error = tagData.posErr;
                                     // float First_Path = tagData.first_path_power;
                                     // float Rx_Level = tagData.rx_level;
@@ -75,6 +77,19 @@ void AP_Beacon_LuminousBees::update(void)
                                     estimated_position.x = tagData.estPos[0];
                                     estimated_position.y = tagData.estPos[1];
                                     estimated_position.z = tagData.estPos[2];
+                                    array_anc[0]=tagData.view_anc[0];
+                                    array_anc[1]=tagData.view_anc[1];
+                                    array_anc[2]=tagData.view_anc[2];
+                                    array_anc[3]=tagData.view_anc[3];
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"START");
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"%u",array_anc[0]);
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"%u",array_anc[1]);
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"%u",array_anc[2]);
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"%u",array_anc[3]);
+                                    // gcs().send_text(MAV_SEVERITY_CRITICAL,"END");
+                                  
+
+                                    
 
                                     //gcs().send_text(MAV_SEVERITY_CRITICAL,"%f",tagData.tot_calc_power);
 
@@ -91,9 +106,9 @@ void AP_Beacon_LuminousBees::update(void)
                                     if (idx % 10 == 0) {
                                         //send mavlink
                                        // mavlink_msg_debug_vect_send(MAVLINK_COMM_0, message_name, AP_HAL::millis64(), estimated_position.x, estimated_position.y, estimated_position.z);
-                                        //AP::logger().Write("RAW_POS","Time,X,Y,Z","Qfff",AP_HAL::micros64(),double(estimated_position.x),double(estimated_position.y),double(estimated_position.z));
+                                        AP::logger().Write("ID_3","ID_3","B",array_anc[3]);
                                         //high frequency method
-                                        AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,tagData.first_path_power,tagData.rx_level,tagData.std_noise);
+                                        AP::logger().WriteRawPos(estimated_position.x,estimated_position.y,estimated_position.z,tagData.first_path_power,tagData.rx_level,tagData.std_noise,array_anc[0],array_anc[1],array_anc[2],array_anc[3]);
                                         //comment or not to active 
                                 }
                                 }
