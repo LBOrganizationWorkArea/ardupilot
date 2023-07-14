@@ -331,6 +331,13 @@ public:
         AP_Int16 _required_count;
         uint16_t _real_required_count;
         AP_Int8 _sensor_mask;
+
+        enum batch_opt_t {
+            BATCH_OPT_SENSOR_RATE = (1<<0),
+            BATCH_OPT_POST_FILTER = (1<<1),
+            BATCH_OPT_PRE_POST_FILTER = (1<<2),
+        };
+        bool has_option(batch_opt_t option) const { return _batch_options_mask & uint16_t(option); }
         AP_Int8 _batch_options_mask;
 
         // Parameters controlling pushing data to AP_Logger:
@@ -348,12 +355,6 @@ public:
 
     private:
 
-        enum batch_opt_t {
-            BATCH_OPT_SENSOR_RATE = (1<<0),
-            BATCH_OPT_POST_FILTER = (1<<1),
-            BATCH_OPT_PRE_POST_FILTER = (1<<2),
-        };
-
         void rotate_to_next_sensor();
         void update_doing_sensor_rate_logging();
 
@@ -364,7 +365,6 @@ public:
         bool Write_ISBH(const float sample_rate_hz) const;
         bool Write_ISBD() const;
 
-        bool has_option(batch_opt_t option) const { return _batch_options_mask & uint16_t(option); }
 
         uint64_t measurement_started_us;
 
