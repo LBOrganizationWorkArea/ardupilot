@@ -771,9 +771,8 @@ void AP_InertialSensor_Invensensev3::set_filter_and_scaling(void)
         }
     }
 
-    // enable gyro and accel in low-noise modes
-    register_write(INV3REG_PWR_MGMT0, 0x0F);
-    hal.scheduler->delay_microseconds(300);
+    // disable gyro and accel as per 12.9 in the ICM-42688 docs
+    register_write(INV3REG_PWR_MGMT0, 0x00);
 
     // setup gyro for backend rate
     register_write(INV3REG_GYRO_CONFIG0, odr_config);
@@ -793,27 +792,9 @@ void AP_InertialSensor_Invensensev3::set_filter_and_scaling(void)
     register_write_bank(2, INV3REG_ACCEL_CONFIG_STATIC3, (accel_aaf_deltsqr & 0xFF)); // ACCEL_AAF_DELTSQR
     register_write_bank(2, INV3REG_ACCEL_CONFIG_STATIC4, ((accel_aaf_bitshift<<4) & 0xF0) | ((accel_aaf_deltsqr>>8) & 0x0F)); // ACCEL_AAF_BITSHIFT | ACCEL_AAF_DELTSQR
 
-    switch (inv3_type) {
-    case Invensensev3_Type::ICM42688:
-    case Invensensev3_Type::ICM42605:
-    case Invensensev3_Type::IIM42652:
-    case Invensensev3_Type::ICM42670: {
-        /*
-          fix for the "stuck gyro" issue, which affects all IxM42xxx
-          sensors. This disables the AFSR feature which changes the
-          noise sensitivity with angular rate. When the switch happens
-          (at around 100 deg/sec) the gyro gets stuck for around 2ms,
-          producing constant output which causes a DC gyro bias
-        */
-        const uint8_t v = register_read(INV3REG_42XXX_INTF_CONFIG1);
-        register_write(INV3REG_42XXX_INTF_CONFIG1, (v & 0x3F) | 0x40, true);
-        break;
-    }
-    case Invensensev3_Type::ICM40605:
-    case Invensensev3_Type::ICM40609:
-    case Invensensev3_Type::ICM45686:
-        break;
-    }
+    // enable gyro and accel in low-noise modes
+    register_write(INV3REG_PWR_MGMT0, 0x0F);
+    hal.scheduler->delay_microseconds(300);
 }
 
 /*
