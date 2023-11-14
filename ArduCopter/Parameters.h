@@ -143,6 +143,7 @@ public:
         k_param_throttle_filt,
         k_param_throttle_behavior,
         k_param_pilot_takeoff_alt, // 64
+        k_param_cust_remoteid,
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
@@ -401,6 +402,7 @@ public:
     AP_Float        throttle_filt;
     AP_Int16        throttle_behavior;
     AP_Float        pilot_takeoff_alt;
+    AP_Int8         cust_remoteid;
 
 #if MODE_RTL_ENABLED == ENABLED
     AP_Int32        rtl_altitude;
