@@ -534,7 +534,10 @@
 #ifndef AUTO_DISARMING_DELAY
 # define AUTO_DISARMING_DELAY  10
 #endif
-
+//CUSTOM REMOTEI ID
+#ifndef CUST_REMOTEID_DEFAULT
+ # define CUST_REMOTEID_DEFAULT      0     // default value for my new parameter
+#endif
 //////////////////////////////////////////////////////////////////////////////
 // Throw mode configuration
 //
