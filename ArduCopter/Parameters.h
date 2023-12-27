@@ -143,7 +143,6 @@ public:
         k_param_throttle_filt,
         k_param_throttle_behavior,
         k_param_pilot_takeoff_alt, // 64
-        k_param_cust_remoteid,
 
         // 65: AP_Limits Library
         k_param_limits = 65,            // deprecated - remove
@@ -168,6 +167,7 @@ public:
         k_param_single_servo_2,         // remove
         k_param_single_servo_3,         // remove
         k_param_single_servo_4,         // 78 - remove
+
 
         //
         // 80: Heli
@@ -239,6 +239,7 @@ public:
         k_param_rtl_speed_cms = 135,
         k_param_fs_batt_curr_rtl,
         k_param_rtl_cone_slope, // 137
+
 
         //
         // 140: Sensor parameters
@@ -330,6 +331,9 @@ public:
         k_param_simple_modes,
         k_param_flight_mode_chan,
         k_param_initial_mode,
+        k_param_cust_remoteid, //209
+
+
 
         //
         // 210: Waypoint data
