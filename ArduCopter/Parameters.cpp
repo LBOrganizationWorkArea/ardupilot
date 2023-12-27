@@ -41,12 +41,14 @@ const AP_Param::Info Copter::var_info[] = {
     // @Range: 1 255
     // @User: Advanced
     GSCALAR(sysid_this_mav, "SYSID_THISMAV",   MAV_SYSTEM_ID),
+
     // @Param: CUST_REMOTEID
     // @DisplayName: cust_remoteid
-    // @Description: Enable cust remote id
+    // @Description: Enable Custom Remote Id 
     // @Range: 0 1
     // @User: Advanced
     GSCALAR(cust_remoteid, "CUST_REMOTEID", CUST_REMOTEID_DEFAULT),
+
     // @Param: SYSID_MYGCS
     // @DisplayName: My ground station number
     // @Description: Allows restricting radio overrides to only come from my ground station
