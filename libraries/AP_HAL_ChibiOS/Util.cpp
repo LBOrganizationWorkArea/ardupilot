@@ -27,6 +27,7 @@
 #include "hwdef/common/flash.h"
 #include <AP_ROMFS/AP_ROMFS.h>
 #include <AP_Common/ExpandingString.h>
+#include <AP_InternalError/AP_InternalError.h>
 #include "sdcard.h"
 #include "shared_dma.h"
 #if defined(HAL_PWM_ALARM) || HAL_DSHOT_ALARM_ENABLED || HAL_CANMANAGER_ENABLED || HAL_USE_PWM == TRUE
@@ -75,6 +76,12 @@ void* Util::malloc_type(size_t size, AP_HAL::Util::Memory_Type mem_type)
         return malloc_dma(size);
     } else if (mem_type == AP_HAL::Util::MEM_FAST) {
         return malloc_fastmem(size);
+    } else if (mem_type == AP_HAL::Util::MEM_FILESYSTEM) {
+#if defined(STM32H7)
+        return malloc_axi_sram(size);
+#else
+        return malloc_dma(size);
+#endif
     } else {
         return calloc(1, size);
     }

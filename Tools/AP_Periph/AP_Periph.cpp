@@ -101,7 +101,7 @@ void AP_Periph_FW::init()
     can_start();
 
 #ifdef HAL_PERIPH_ENABLE_NETWORKING
-    networking.init();
+    networking_periph.init();
 #endif
 
 #if HAL_GCS_ENABLED
@@ -140,6 +140,10 @@ void AP_Periph_FW::init()
     node_stats.init();
 #endif
 
+#ifdef HAL_PERIPH_ENABLE_SERIAL_OPTIONS
+    serial_options.init();
+#endif
+
 #ifdef HAL_PERIPH_ENABLE_GPS
     if (gps.get_type(0) != AP_GPS::GPS_Type::GPS_TYPE_NONE && g.gps_port >= 0) {
         serial_manager.set_protocol_and_baud(g.gps_port, AP_SerialManager::SerialProtocol_GPS, AP_SERIALMANAGER_GPS_BAUD);
@@ -160,7 +164,7 @@ void AP_Periph_FW::init()
 #endif
 
 #ifdef HAL_PERIPH_ENABLE_BATTERY
-    battery.lib.init();
+    battery_lib.init();
 #endif
 
 #ifdef HAL_PERIPH_ENABLE_RCIN
@@ -231,7 +235,7 @@ void AP_Periph_FW::init()
     }
 #endif
 
-#if HAL_PROXIMITY_ENABLED
+#ifdef HAL_PERIPH_ENABLE_PROXIMITY
     if (proximity.get_type(0) != AP_Proximity::Type::None && g.proximity_port >= 0) {
         auto *uart = hal.serial(g.proximity_port);
         if (uart != nullptr) {
@@ -422,10 +426,8 @@ void AP_Periph_FW::update()
         rcout_init_1Hz();
 #endif
 
-#if HAL_GCS_ENABLED
-        gcs().send_message(MSG_HEARTBEAT);
-        gcs().send_message(MSG_SYS_STATUS);
-#endif    
+        GCS_SEND_MESSAGE(MSG_HEARTBEAT);
+        GCS_SEND_MESSAGE(MSG_SYS_STATUS);
     }
 
     static uint32_t last_error_ms;
@@ -457,7 +459,7 @@ void AP_Periph_FW::update()
     if (now - battery.last_read_ms >= 100) {
         // update battery at 10Hz
         battery.last_read_ms = now;
-        battery.lib.read();
+        battery_lib.read();
     }
 #endif
 
@@ -465,6 +467,10 @@ void AP_Periph_FW::update()
     rcin_update();
 #endif
 
+#ifdef HAL_PERIPH_ENABLE_BATTERY_BALANCE
+    batt_balance_update();
+#endif
+    
     static uint32_t fiftyhz_last_update_ms;
     if (now - fiftyhz_last_update_ms >= 20) {
         // update at 50Hz
@@ -500,7 +506,7 @@ void AP_Periph_FW::update()
     can_update();
 
 #ifdef HAL_PERIPH_ENABLE_NETWORKING
-    networking.update();
+    networking_periph.update();
 #endif
 
 #if (defined(HAL_PERIPH_NEOPIXEL_COUNT_WITHOUT_NOTIFY) && HAL_PERIPH_NEOPIXEL_COUNT_WITHOUT_NOTIFY == 8) || defined(HAL_PERIPH_ENABLE_NOTIFY)

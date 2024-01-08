@@ -47,6 +47,9 @@ bool AP_BattMonitor_Backend::capacity_remaining_pct(uint8_t &percentage) const
     if (!has_current() || !_state.healthy) {
         return false;
     }
+    if (isnan(_state.consumed_mah) || _params._pack_capacity <= 0) {
+        return false;
+    }
 
     const float mah_remaining = _params._pack_capacity - _state.consumed_mah;
     percentage = constrain_float(100 * mah_remaining / _params._pack_capacity, 0, UINT8_MAX);
@@ -272,6 +275,20 @@ void AP_BattMonitor_Backend::update_esc_telem_outbound()
 }
 #endif
 
+// returns true if battery monitor provides temperature
+bool AP_BattMonitor_Backend::get_temperature(float &temperature) const
+{
+#if AP_TEMPERATURE_SENSOR_ENABLED
+    if (_state.temperature_external_use) {
+        temperature = _state.temperature_external;
+        return true;
+    }
+#endif
+
+    temperature = _state.temperature;
+
+    return has_temperature();
+}
 
 /*
   default implementation for reset_remaining(). This sets consumed_wh
