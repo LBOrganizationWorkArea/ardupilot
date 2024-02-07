@@ -27,8 +27,8 @@
 #define CRSF_FRAMELEN_MAX   64U      // maximum possible framelength
 #define CSRF_HEADER_LEN     2U       // header length
 #define CRSF_FRAME_PAYLOAD_MAX (CRSF_FRAMELEN_MAX - CSRF_HEADER_LEN)     // maximum size of the frame length field in a packet
-#define CRSF_BAUDRATE      416666U
-#define ELRS_BAUDRATE      420000U
+#define CRSF_BAUDRATE      115200U
+#define ELRS_BAUDRATE      115200U
 #define CRSF_TX_TIMEOUT    500000U   // the period after which the transmitter is considered disconnected (matches copters failsafe)
 #define CRSF_RX_TIMEOUT    150000U   // the period after which the receiver is considered disconnected (>ping frequency)
 
