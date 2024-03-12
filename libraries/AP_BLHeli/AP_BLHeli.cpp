@@ -42,7 +42,11 @@
 #include <AP_BoardConfig/AP_BoardConfig.h>
 #include <AP_ESC_Telem/AP_ESC_Telem.h>
 #include <SRV_Channel/SRV_Channel.h>
-
+#define CMD_SET_BAUD_RATE 0xFC
+//Set baud rate up to 115200 baud // ESC production only
+#define cmd_DeviceSetBaudRate 0x4A   // 'J' write
+// PARAM: uint8_t baud_idx
+// RETURN: ACK
 extern const AP_HAL::HAL& hal;
 
 #define debug(fmt, args ...) do { if (debug_level) { GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ESC: " fmt, ## args); } } while (0)
@@ -53,6 +57,44 @@ extern const AP_HAL::HAL& hal;
 
 // if no packets are received for this time and motor control is active BLH will disconect (stoping motors)
 #define MOTOR_ACTIVE_TIMEOUT 1000
+
+static uint32_t BIT_TICKS;       //
+static uint32_t START_BIT_TICKS; // BIT_TIME_3_4)
+
+static void Init_Baudrate(uint8_t baud_idx)
+{
+    uint32_t cpuClockFrequency;
+    uint32_t baud;
+
+// // copied from system.c
+// #if defined(USE_HAL_DRIVER)
+     cpuClockFrequency = 0;
+// #else
+//     RCC_ClocksTypeDef clocks;
+//     RCC_GetClocksFreq(&clocks);
+//     cpuClockFrequency = clocks.SYSCLK_Frequency;
+// #endif
+
+    switch(baud_idx){
+        case 1:
+            baud = 19200;
+            break;
+        case 2:
+            baud = 38400;
+            break;
+        case 3:
+            baud = 57600;
+            break;
+        case 6:
+            baud = 115200;
+            break;
+        default:
+            baud = 19200;
+    }
+    BIT_TICKS = cpuClockFrequency / baud;
+    START_BIT_TICKS = (BIT_TICKS >> 1) + (BIT_TICKS >> 2);
+}
+
 
 const AP_Param::GroupInfo AP_BLHeli::var_info[] = {
     // @Param: MASK
@@ -752,6 +794,7 @@ bool AP_BLHeli::BL_ConnectEx(void)
     }
     debug("BL_ConnectEx %u/%u at %u", blheli.chan, num_motors, motor_map[blheli.chan]);
     setDisconnected();
+    Init_Baudrate(1); // initial 19200 baud
     const uint8_t BootInit[] = {0,0,0,0,0,0,0,0,0,0,0,0,0x0D,'B','L','H','e','l','i',0xF4,0x7D};
     if (!BL_SendBuf(BootInit, 21)) {
         return false;
@@ -837,10 +880,22 @@ bool AP_BLHeli::BL_PageErase(void)
     return false;
 }
 
+uint8_t AP_BLHeli::BL_SendCMDSetBaudRate(uint8_t baud_idx)
+{
+    uint8_t sCMD[] = {CMD_SET_BAUD_RATE, baud_idx};
+    BL_SendBuf(sCMD, 2);
+    if (BL_GetACK(2) == brSUCCESS) {
+        Init_Baudrate(baud_idx);
+        return 1;
+    }
+    return 0;
+}
+
 void AP_BLHeli::BL_SendCMDRunRestartBootloader(void)
 {
     uint8_t sCMD[] = {RestartBootloader, 0};
     blheli.deviceInfo[blheli.chan][0] = 1;
+    Init_Baudrate(1); // we are not connected initial 19200 baud
     BL_SendBuf(sCMD, 2);
 }
 

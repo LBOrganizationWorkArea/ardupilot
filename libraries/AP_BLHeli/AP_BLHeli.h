@@ -278,6 +278,7 @@ private:
     bool BL_SendCMDKeepAlive(void);
     bool BL_PageErase(void);
     void BL_SendCMDRunRestartBootloader(void);
+    uint8_t BL_SendCMDSetBaudRate(uint8_t baud_idx);
     uint8_t BL_SendCMDSetBuffer(const uint8_t *buf, uint16_t nbytes);
     bool BL_WriteA(uint8_t cmd, const uint8_t *buf, uint16_t nbytes, uint32_t timeout);
     uint8_t BL_WriteFlash(const uint8_t *buf, uint16_t n);
