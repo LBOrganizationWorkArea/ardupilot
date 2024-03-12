@@ -1193,6 +1193,21 @@ void AP_BLHeli::blheli_process_command(void)
         blheli_send_reply(&b, 1);
         break;
     }
+     case cmd_DeviceSetBaudRate:
+                {
+                    case imARM_BLB:
+                    {
+                        if (BL_SendCMDSetBaudRate(blheli.buf[0])){
+                            ACK_OUT = ACK_OK;
+                        } else {
+                            ACK_OUT = ACK_D_GENERAL_ERROR;
+                        }
+                        break;
+                    }
+                    break;
+                }
+
+
 
     case cmd_DeviceEraseAll:
     case cmd_DeviceC2CK_LOW:
