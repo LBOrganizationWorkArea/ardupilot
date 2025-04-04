@@ -145,7 +145,8 @@ bool AP_Compass_QMC5883L::_check_whoami()
 {
     uint8_t whoami;
     //Affected by other devices,must read registers 0x00 once or reset,after can read the ID registers reliably
-    _dev->read_registers(0x00,&whoami,1);
+    _dev->write_register(0x0A, 0x80);
+   // _dev->read_registers(0x00,&whoami,1);
     if (!_dev->read_registers(0x0C, &whoami,1)||
       		whoami != 0x01){
     	return false;
