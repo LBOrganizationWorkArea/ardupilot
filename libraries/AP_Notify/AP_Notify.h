@@ -139,6 +139,7 @@ public:
         bool video_recording;     // true when the vehicle is recording video
         bool temp_cal_running;    // true if a temperature calibration is running
         bool gyro_calibrated;     // true if calibrated gyro/acc
+        bool motor_not_spinning;  //variable to check if motors are spinning or not
     };
 
     /// notify_events_type - bitmask of active events.
