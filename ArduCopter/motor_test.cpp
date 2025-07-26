@@ -155,6 +155,8 @@ MAV_RESULT Copter::mavlink_motor_test_start(const GCS_MAVLINK &gcs_chan, uint8_t
         } else {
             // start test
             gcs().send_text(MAV_SEVERITY_INFO, "starting motor test");
+            motor_test_completed_successfully=true;
+            AP_Notify::flags.motor_not_spinning = false;
             ap.motor_test = true;
 
             EXPECT_DELAY_MS(3000);
@@ -201,7 +203,10 @@ void Copter::motor_test_stop()
         return;
     }
 
-    gcs().send_text(MAV_SEVERITY_INFO, "finished motor test");    
+    gcs().send_text(MAV_SEVERITY_INFO, "finished motor test");
+    if(motor_test_completed_successfully){gcs().send_text(MAV_SEVERITY_INFO, "MOT OK");AP_Notify::flags.motor_not_spinning = false;}else{gcs().send_text(MAV_SEVERITY_INFO, "MOT NOT OK");AP_Notify::flags.motor_not_spinning = true;}
+    motor_test_completed_successfully=false;
+    AP_Notify::flags.motor_not_spinning = false;
 
     // flag test is complete
     ap.motor_test = false;
