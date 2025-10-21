@@ -157,22 +157,16 @@ bool AP_ESC_Telem::are_motors_running(uint32_t servo_channel_mask, float min_rpm
 
     for (uint8_t i = 0; i < ESC_TELEM_MAX_ESCS; i++) {
         if (BIT_IS_SET(servo_channel_mask, i)) {
-            gcs().send_text(MAV_SEVERITY_INFO, "ENTRO");
             const volatile AP_ESC_Telem_Backend::RpmData& rpmdata = _rpm_data[i];
-            gcs().send_text(MAV_SEVERITY_INFO, "rpm_data: %f", rpmdata.rpm );
             // we choose a relatively strict measure of health so that failsafe actions can rely on the results
             if (!rpm_data_within_timeout(rpmdata, now, ESC_RPM_CHECK_TIMEOUT_US)) {
-                gcs().send_text(MAV_SEVERITY_INFO, "NON GIRA TIMEOUT");
                 return false;
             }
             if (rpmdata.rpm < min_rpm) {
-                gcs().send_text(MAV_SEVERITY_INFO, "servo_channel_mask: %u", i );
-                gcs().send_text(MAV_SEVERITY_INFO, "NON GIRA1");
+
                 return false;
             }
             if ((max_rpm > 0) && (rpmdata.rpm > max_rpm)) {
-                gcs().send_text(MAV_SEVERITY_INFO, "servo_channel_mask: %u", i );
-                gcs().send_text(MAV_SEVERITY_INFO, "NON GIRA2");
                 return false;
             }
         }

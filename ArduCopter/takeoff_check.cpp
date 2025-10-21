@@ -49,15 +49,6 @@ void Copter::takeoff_check()
         if (!telem_active) {
             gcs().send_text(MAV_SEVERITY_CRITICAL, "%s waiting for ESC RPM", prefix_str);
         } else if (!rpm_adequate) {
-            motor_test_completed_successfully=false;
-            // disarm motors
-            motors->armed(false);
-            hal.util->set_soft_armed(false);
-            AP_Notify::flags.pre_arm_check = arming.pre_arm_checks(false);
-            motor_test_stop();
-            AP_Notify::flags.motor_not_spinning = true;
-
-            gcs().send_text(MAV_SEVERITY_CRITICAL, "%s DISARM! ESC RPM out of range", prefix_str);
         }
     }
 #endif

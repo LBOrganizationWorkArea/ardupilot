@@ -400,7 +400,6 @@ private:
     } ap_t;
 
     ap_t ap;
-    bool motor_test_completed_successfully;
     AirMode air_mode; // air mode is 0 = not-configured ; 1 = disabled; 2 = enabled;
     bool force_flying; // force flying is enabled when true;
 
