@@ -264,16 +264,6 @@ void AC_DroneShowManager::_update_lights()
     // Compass calibration is always requested by the user so he can rightly
     // expect any light signal that was previously set up from the GCS to be
     // overridden.
-    if(AP_Notify::flags.motor_not_spinning){
-        color = Colors::RED;
-        pattern = FLASH_FOUR_TIMES_PER_SECOND;
-
-        // Make sure that this light signal is visible with a minimum intensity
-        // if the user otherwise turned off the light signals
-        if (brightness < 1) {
-            brightness = 1;
-        }
-    }
     if (AP_Notify::flags.compass_cal_running) {
         color = Colors::MAGENTA;
         pulse = 0.5;
