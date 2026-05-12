@@ -632,6 +632,9 @@ public:
     RC_Channel &get_yaw_channel();
     RC_Channel &get_throttle_channel();
 
+    void rudder_arm_disarm_check();
+    bool seen_neutral_rudder() const { return have_seen_neutral_rudder; }
+
 protected:
 
     void new_override_received() {
@@ -664,6 +667,7 @@ private:
 
     // true if GCS is performing a RC calibration
     bool gcs_is_calibrating;
+    bool have_seen_neutral_rudder;
 
 #if AP_SCRIPTING_ENABLED
     // bitmask of last aux function value, 2 bits per function
@@ -676,6 +680,7 @@ private:
 
     RC_Channel &get_rcmap_channel_nonnull(uint8_t rcmap_number);
     RC_Channel dummy_rcchannel;
+    uint32_t rudder_arm_timer;
 };
 
 RC_Channels &rc();

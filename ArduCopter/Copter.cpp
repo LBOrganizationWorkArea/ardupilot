@@ -526,7 +526,9 @@ void Copter::rc_loop()
 {
     // Read radio and 3-position switch on radio
     // -----------------------------------------
-    read_radio();
+    if(!rc().option_is_enabled(RC_Channels::Option::IGNORE_RECEIVER) &&
+    !rc().option_is_enabled(RC_Channels::Option::IGNORE_OVERRIDES))
+        read_radio();
     rc().read_mode_switch();
 }
 
